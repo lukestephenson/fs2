@@ -86,14 +86,11 @@ lazy val publishingSettings = Seq(
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
+      Some("snapshots" at "http://nexus.delivery.realestate.com.au/nexus/content/repositories/snapshots")
     else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
+      Some("releases" at "http://nexus.delivery.realestate.com.au/nexus/content/repositories/releases")
   },
-  credentials ++= (for {
-    username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-    password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-  } yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq,
+  credentials += Credentials("Sonatype Nexus Repository Manager", "nexus.delivery.realestate.com.au", "deploy", sys.env.getOrElse("NEXUS_PASSWORD", "undefined")),
   publishMavenStyle := true,
   pomIncludeRepository := { _ => false },
   pomExtra := {
